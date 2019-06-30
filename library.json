@@ -1,0 +1,23 @@
+{
+    "name": "Serde",
+    "version": "0.0.1",
+    "keywords": "serialize, deserialize, send, receive, marshalling",
+    "description": "Send / receive structured data across Streams on Arduino",
+    "license": "MIT",
+    "authors": {
+        "name": "Francois Best",
+        "email": "contact@francoisbest.com",
+        "url": "https://github.com/franky47",
+        "maintainer": true
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/FortySevenEffects/serde.git",
+        "branch": "master"
+    },
+    "export": {
+        "include": ["src", "examples"]
+    },
+    "frameworks": "arduino",
+    "platforms": ["atmelavr", "atmelsam", "teensy"]
+}
