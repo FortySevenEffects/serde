@@ -114,7 +114,7 @@ There is nothing particular to do after reception, just use it:
 Message message;
 if (Serde<Message, HardwareSerial>::receive(Serial1, message))
 {
-  Serial.println(message.mText);
+    Serial.println(message.mText);
 }
 ```
 
