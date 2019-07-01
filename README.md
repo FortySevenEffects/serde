@@ -1,11 +1,12 @@
 # 📡 Serde
 
-Send / receive structured data across Streams on Arduino.
+Exchange structured data between Arduino boards.
 
 ## Features
 
 - 💪 Cross-device strong data typing
 - 📦 Send / receive either structs or scalar types
+- 🔌 Use any Stream-based interface (HardwareSerial, SoftwareSerial, I2C, SPI...)
 - 🔒 Internal checksum for data integrity verification
 - ↔️ Receive and send different types on the same stream
   ([example](./examples/DifferentTypesForTXandRX/DifferentTypesForTXandRX.ino))
