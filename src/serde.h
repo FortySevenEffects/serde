@@ -3,15 +3,20 @@
 #include <inttypes.h>
 #include <string.h>
 
-static const uint16_t sSerdeHeader = 0x1242;
+static const uint8_t sSerdeHeaderMsb  = 0xf0;
+static const uint8_t sSerdeHeaderLsb  = 0x0d;
 
 template <size_t Size>
 struct SerdePacket
 {
 public:
-  uint16_t mHeader = sSerdeHeader;
-  uint8_t mData[Size] = {0x00};
-  uint8_t mChecksum = 0x00;
+  static const size_t sSize = sizeof(SerdePacket<Size>);
+
+public:
+  uint8_t mHeaderMsb  = sSerdeHeaderMsb;
+  uint8_t mHeaderLsb  = sSerdeHeaderLsb;
+  uint8_t mData[Size] = { 0x00 };
+  uint8_t mChecksum   = 0x00;
 
 public:
   inline uint8_t generateChecksum() const;
@@ -67,7 +72,7 @@ public:
 template <typename T, typename Stream>
 struct Serde
 {
-private:
+public:
   using Packet = SerdePacket<sizeof(T)>;
 
 public: // TX
@@ -75,7 +80,6 @@ public: // TX
 
 public: // RX
   static inline bool receive(Stream &inStream, T &outObject);
-  static inline bool canReceive(Stream &inStream);
 
 private:
   static inline void pack(const T &inObject, Packet &outPacket);
@@ -88,8 +92,8 @@ template <size_t Size>
 inline uint8_t SerdePacket<Size>::generateChecksum() const
 {
   uint8_t x = 0x2a; // Initialization vector
-  x ^= mHeader >> 8;
-  x ^= mHeader & 0x00ff;
+  x ^= mHeaderMsb;
+  x ^= mHeaderLsb;
   for (size_t i = 0; i < Size; ++i)
   {
     x ^= mData[i];
@@ -111,12 +115,9 @@ inline void Serde<T, Stream>::send(const T &inObject, Stream &inStream)
 {
   Packet packet;
   pack(inObject, packet);
-  inStream.write((packet.mHeader & 0xff00) >> 8);
-  inStream.write(packet.mHeader & 0x00ff);
-  for (size_t i = 0; i < sizeof(T); ++i)
-  {
-    inStream.write(packet.mData[i]);
-  }
+  inStream.write(packet.mHeaderMsb);
+  inStream.write(packet.mHeaderLsb);
+  inStream.write(packet.mData[i], sizeof(T));
   inStream.write(packet.mChecksum);
 }
 
@@ -125,14 +126,8 @@ inline void Serde<T, Stream>::send(const T &inObject, Stream &inStream)
 template <typename T, typename Stream>
 inline bool Serde<T, Stream>::receive(Stream &inStream, T &outObject)
 {
-  if (!canReceive(inStream))
-  {
-    return false;
-  }
-
   Packet packet;
-  const bool result = unpack(inStream, packet);
-  if (!result)
+  if (!unpack(inStream, packet))
   {
     return false;
   }
@@ -141,21 +136,14 @@ inline bool Serde<T, Stream>::receive(Stream &inStream, T &outObject)
   return true;
 }
 
-template <typename T, typename Stream>
-inline bool Serde<T, Stream>::canReceive(Stream &inStream)
-{
-  // Wait for an entire packet to be available
-  const size_t available = inStream.available();
-  return available >= sizeof(T);
-}
-
 // --
 
 template <typename T, typename Stream>
 inline void Serde<T, Stream>::pack(const T &inObject, Packet &outPacket)
 {
   const T *const addr = &inObject;
-  outPacket.mHeader = sSerdeHeader;
+  outPacket.mHeaderMsb = sSerdeHeaderMsb;
+  outPacket.mHeaderLsb = sSerdeHeaderLsb;
   memcpy(outPacket.mData, addr, sizeof(T));
   outPacket.mChecksum = outPacket.generateChecksum();
 }
@@ -163,20 +151,37 @@ inline void Serde<T, Stream>::pack(const T &inObject, Packet &outPacket)
 template <typename T, typename Stream>
 inline bool Serde<T, Stream>::unpack(Stream &inStream, Packet &outPacket)
 {
+  while (inStream.available() && inStream.peek() != sSerdeHeaderMsb) {
+    inStream.read(); // Drop non-header bytes
+  }
+  if (size_t(inStream.available()) < Packet::sSize) {
+    return false; // Not enough data
+  }
+
+  // At this point, the first byte in the buffer is sSerdeHeaderMsb
+  // and there is enough data to try to recompose a message.
+
   // Verify header
-  const uint16_t headerMsb = inStream.read();
-  const uint16_t headerLsb = inStream.read();
-  const uint16_t header = headerMsb << 8 | headerLsb;
-  if (header != sSerdeHeader)
+  outPacket.mHeaderMsb = inStream.read();
+  if (outPacket.mHeaderMsb != sSerdeHeaderMsb)
   {
+    // Technically this was covered earlier and should not happen.
     return false;
   }
-  outPacket.mHeader = header;
+  if (inStream.peek() != sSerdeHeaderLsb)
+  {
+    // Don't drop it as it could be a header MSB.
+    // Abort now and try next time.
+    // Serial.println("Second byte is not LSB, aborting");
+    return false;
+  }
+  outPacket.mHeaderLsb = inStream.read();
 
   // Read data
   const size_t readBytes = inStream.readBytes(outPacket.mData, sizeof(T));
   if (readBytes != sizeof(T))
   {
+    // Mismatching read size
     return false;
   }
 
