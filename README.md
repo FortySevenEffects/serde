@@ -2,6 +2,14 @@
 
 Send / receive structured data across Streams on Arduino.
 
+## Features
+
+- 💪 Cross-device strong data typing
+- 📦 Send / receive either structs or scalar types
+- 🔒 Internal checksum for data integrity verification
+- ↔️ Receive and send different types on the same stream
+  ([example](./examples/DifferentTypesForTXandRX/DifferentTypesForTXandRX.ino))
+
 ## Install
 
 Use the Arduino Library Manager to install the library.
