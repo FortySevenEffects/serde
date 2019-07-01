@@ -32,7 +32,7 @@ struct Message
 
 ```cpp
 #include <serde.h>
-#include "shared/data.h"
+#include "shared/message.h"
 
 using MessageSerde = Serde<Message, HardwareSerial>;
 
@@ -56,7 +56,7 @@ void loop()
 
 ```cpp
 #include <serde.h>
-#include "shared/data.h"
+#include "shared/message.h"
 
 using MessageSerde = Serde<Message, HardwareSerial>;
 
