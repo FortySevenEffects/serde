@@ -71,13 +71,10 @@ void loop()
 
 ## Caveats
 
-There are rules:
-
 - Both sending and receiving devices must have the same
   [endianness](https://en.wikipedia.org/wiki/Endianness).
 - You can only send [Plain Old Data (POD)](https://stackoverflow.com/questions/146452/what-are-pod-types-in-c)
   objects, nothing allocated or which size is unknown at compile time.
-  The compiler will tell you when this is the case:
 
 ## Sending / Receiving strings
 
