@@ -8,57 +8,108 @@ Use the Arduino Library Manager to install the library.
 
 ## Usage
 
+1. Define shared data:
+
+```cpp
+// shared/message.h
+
+struct Message
+{
+    int mCounter;
+    unsigned long mTime;
+};
+```
+
+2. Send it from one device:
+
 ```cpp
 #include <serde.h>
+#include "shared/data.h"
 
-// 1. Define some data structure to share
-// across the wire (Serial, I2C, SPI..):
-struct Data {
-  int mCounter;
-  unsigned long mTime;
-};
+using MessageSerde = Serde<Message, HardwareSerial>;
 
-Data sDataTx = { 0, 0.f };
+Message sMessage = { 0, 0 };
 
-// 2. Define the Serializer / Deserializer :
-using SerdeData = Serde<Data, HardwareSerial>;
-
-void setup() {
-  // Hardware setup: bridge Serial1 TX and RX
-  // to create a loopback interface
-
-  Serial.begin(115200);   // For serial debugging
-  Serial1.begin(115200);  // Hardware loopback
+void setup()
+{
+    Serial.begin(115200);
 }
 
-void loop() {
-  // Send data
-  SerdeData::send(sDataTx, Serial1);
-
-  // Receive data
-  Data dataRx;
-  while (!SerdeData::canReceive(Serial1))
-  {
-    // Wait for entire struct to be available
+void loop()
+{
+    sMessage.mCounter += 1;
+    sMessage.mTime = millis() - sMessage.mTime;
+    MessageSerde::send(sMessage, Serial);
     delay(10);
-  }
+}
+```
 
-  if (SerdeData::receive(Serial1, dataRx))
-  {
-    Serial.print("Count: ");
-    Serial.println(dataRx.mCounter);
-    Serial.print("Time:  ");
-    Serial.println(dataRx.mTime);
+3. Receive it from another device:
 
-    // Update send data
-    sDataTx.mCounter++;
-    sDataTx.mTime = millis() - sDataTx.mTime;
-  }
-  else
-  {
-    // Reception can fail due to data corruption
-    Serial.println("Transmission error");
-  }
+```cpp
+#include <serde.h>
+#include "shared/data.h"
+
+using MessageSerde = Serde<Message, HardwareSerial>;
+
+void setup()
+{
+    Serial.begin(115200);
+}
+
+void loop()
+{
+    Message message;
+    if (MessageSerde::receive(Serial1, message))
+    {
+        // do something with the message data:
+        message.mCounter;
+        message.mTime;
+    }
+}
+```
+
+## Caveats
+
+There are rules:
+
+- Both sending and receiving devices must have the same
+  [endianness](https://en.wikipedia.org/wiki/Endianness).
+- You can only send [Plain Old Data (POD)](https://stackoverflow.com/questions/146452/what-are-pod-types-in-c)
+  objects, nothing allocated or which size is unknown at compile time.
+  The compiler will tell you when this is the case:
+
+## Sending / Receiving strings
+
+Because strings are of arbitrary, run-time known length, you will have
+to send a `char` buffer of fixed length, capable of containing the
+largest string you need (size it well, as all messages will be this big),
+plus one byte for
+[null-termination](https://en.wikipedia.org/wiki/Null-terminated_string).
+
+To send a string:
+
+```cpp
+struct Message
+{
+    // Can hold at maximum 31 characters + 1 null terminator
+    char mText[32] = { 0 };
+};
+
+Message message;
+memset(message.mText, 0, sizeof(Message::mText)); // clear
+memcpy(message.mText, "Hello, World !", 14);      // copy
+
+Serde<Message, HardwareSerial>::send(message, Serial);
+```
+
+There is nothing particular to do after reception, just use it:
+
+```cpp
+Message message;
+if (MessageSerde::receive(Serial1, message))
+{
+  Serial.println(message.mText);
 }
 ```
 
