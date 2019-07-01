@@ -16,7 +16,8 @@
     "branch": "master"
   },
   "export": {
-    "include": ["src/serde.h"]
+    "include": ["src/serde.h"],
+    "exclude": ["tests/**"]
   },
   "frameworks": "arduino",
   "platforms": ["atmelavr", "atmelsam", "teensy"]

@@ -10,9 +10,6 @@ template <size_t Size>
 struct SerdePacket
 {
 public:
-  static const size_t sSize = sizeof(SerdePacket<Size>);
-
-public:
   uint8_t mHeaderMsb  = sSerdeHeaderMsb;
   uint8_t mHeaderLsb  = sSerdeHeaderLsb;
   uint8_t mData[Size] = { 0x00 };
@@ -154,7 +151,7 @@ inline bool Serde<T, Stream>::unpack(Stream &inStream, Packet &outPacket)
   while (inStream.available() && inStream.peek() != sSerdeHeaderMsb) {
     inStream.read(); // Drop non-header bytes
   }
-  if (size_t(inStream.available()) < Packet::sSize) {
+  if (size_t(inStream.available()) < sizeof(Packet)) {
     return false; // Not enough data
   }
 
