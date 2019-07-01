@@ -52,7 +52,7 @@ void loop()
 }
 ```
 
-3. Receive it from another device:
+3. Receive it on another device:
 
 ```cpp
 #include <serde.h>
