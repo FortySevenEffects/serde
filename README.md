@@ -20,7 +20,7 @@ struct Data {
 
 Data sDataTx = { 0, 0.f };
 
-// 2. Define the Serualizer / Deserializer :
+// 2. Define the Serializer / Deserializer :
 using SerdeData = Serde<Data, HardwareSerial>;
 
 void setup() {
