@@ -118,6 +118,15 @@ if (MessageSerde::receive(Serial1, message))
 }
 ```
 
+## Threading considerations
+
+- When calling `receive`, you can be sure that the object passed will
+  never have been changed if `receive` returns false.
+- Since Arduino is single-threaded, there should be no race conditions
+  when `receive` returns true, however interrupts can be seen as threads,
+  so if using the received value in an interrupt handler, be sure to know
+  that it could be in the middle of an update.
+
 ## License & Aknowledgements
 
 Inspired from Rust's awesome crate [serde](https://crates.io/crates/serde). 🦀
