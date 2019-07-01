@@ -16,7 +16,9 @@ add_executable(unit-tests
 
     tests/unit-tests_SerialMock.cpp
     tests/unit-tests_SerdeTx.cpp
+    tests/unit-tests_SerdeRx.cpp
     tests/unit-tests_SerdeLoopback.cpp
+    tests/unit-tests_SerdePacket.cpp
 )
 
 target_link_libraries(unit-tests
