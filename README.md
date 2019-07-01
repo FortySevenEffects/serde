@@ -78,10 +78,10 @@ void loop()
 
 ## Sending / Receiving strings
 
-Because strings are of arbitrary, run-time known length, you will have
-to send a `char` buffer of fixed length, capable of containing the
-largest string you need (size it well, as all messages will be this big),
-plus one byte for
+Because strings are of an arbitrary, runtime-defined length, you will have
+to send a `char` buffer of a fixed length, capable of containing the
+largest string you need (size it appropriately, as all messages will be
+this big), plus one byte for
 [null-termination](https://en.wikipedia.org/wiki/Null-terminated_string).
 
 To send a string:
