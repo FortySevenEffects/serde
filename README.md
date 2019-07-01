@@ -34,7 +34,7 @@ struct Message
 #include <serde.h>
 #include "shared/message.h"
 
-using MessageSerde = Serde<Message, HardwareSerial>;
+using SerdeTX = Serde<Message, HardwareSerial>;
 
 Message sMessage = { 0, 0 };
 
@@ -47,7 +47,7 @@ void loop()
 {
     sMessage.mCounter += 1;
     sMessage.mTime = millis() - sMessage.mTime;
-    MessageSerde::send(sMessage, Serial);
+    SerdeTX::send(sMessage, Serial);
     delay(10);
 }
 ```
@@ -58,7 +58,7 @@ void loop()
 #include <serde.h>
 #include "shared/message.h"
 
-using MessageSerde = Serde<Message, HardwareSerial>;
+using SerdeRX = Serde<Message, HardwareSerial>;
 
 void setup()
 {
@@ -68,7 +68,7 @@ void setup()
 void loop()
 {
     Message message;
-    if (MessageSerde::receive(Serial1, message))
+    if (SerdeRX::receive(Serial1, message))
     {
         // do something with the message data:
         message.mCounter;
@@ -112,7 +112,7 @@ There is nothing particular to do after reception, just use it:
 
 ```cpp
 Message message;
-if (MessageSerde::receive(Serial1, message))
+if (Serde<Message, HardwareSerial>::receive(Serial1, message))
 {
   Serial.println(message.mText);
 }
