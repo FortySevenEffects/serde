@@ -117,7 +117,7 @@ inline void Serde<T, Stream>::send(const T &inObject, Stream &inStream)
   pack(inObject, packet);
   inStream.write(packet.mHeaderMsb);
   inStream.write(packet.mHeaderLsb);
-  inStream.write(packet.mData[i], sizeof(T));
+  inStream.write(packet.mData, sizeof(T));
   inStream.write(packet.mChecksum);
 }
 
