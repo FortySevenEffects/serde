@@ -81,7 +81,7 @@ void loop()
 
 - Both sending and receiving devices must have the same
   [endianness](https://en.wikipedia.org/wiki/Endianness).
-- You can only send [Plain Old Data (POD)](https://stackoverflow.com/questions/146452/what-are-pod-types-in-c)
+- You can only exchange [Plain Old Data (POD)](https://stackoverflow.com/questions/146452/what-are-pod-types-in-c)
   objects, nothing allocated or which size is unknown at compile time.
 
 ## Sending / Receiving strings
