@@ -24,6 +24,7 @@ env:
     - PLATFORMIO_CI_SRC=examples/DifferentTypesForTXandRX
     - PLATFORMIO_CI_SRC=examples/Receiving
     - PLATFORMIO_CI_SRC=examples/Sending
+    - PLATFORMIO_CI_SRC=examples/NestedData
 
 addons:
   apt:
