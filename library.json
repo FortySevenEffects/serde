@@ -1,6 +1,6 @@
 {
   "name": "Serde",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "keywords": "serialize, deserialize, send, receive, marshalling",
   "description": "Exchange structured data between Arduino boards",
   "license": "MIT",
