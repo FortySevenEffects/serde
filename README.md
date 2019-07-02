@@ -94,15 +94,15 @@ so sharing the type definitions between sketches is essential.
 
 The best way to share files between sketches is to create a library.
 
-1. Go to the Arduino libraries directory
+1. Go to the Arduino libraries directory:
 
-- ~/Documents/Arduino/libraries on macOS and Linux
-- ~\Documents\Arduino\libraries on Windows
+- `~/Documents/Arduino/libraries` on macOS and Linux
+- `~\Documents\Arduino\libraries` on Windows
 
 2. Create a new directory, name it as you wish, for example: `weather-shared`
 3. Create a subdirectory `src` in `weather-shared`
 4. Place your definitions in a header file in `src`, like `weather-shared/src/sensor-data.h`
-5. Create a `library.properties` file under `weather-shared`:
+5. Create a `library.properties` file in `weather-shared`:
 
 ```ini
 name=WeatherShared      # This name is only used for published libraries
