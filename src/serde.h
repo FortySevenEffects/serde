@@ -203,16 +203,10 @@ inline bool Serde<T, Stream>::unpack(Stream &inStream, Packet &outPacket)
 
   // Verify header
   outPacket.mHeaderMsb = inStream.read();
-  if (outPacket.mHeaderMsb != sSerdeHeaderMsb)
-  {
-    // Technically this was covered earlier and should not happen.
-    return false;
-  }
   if (inStream.peek() != sSerdeHeaderLsb)
   {
     // Don't drop it as it could be a header MSB.
     // Abort now and try next time.
-    // Serial.println("Second byte is not LSB, aborting");
     return false;
   }
   outPacket.mHeaderLsb = inStream.read();
