@@ -1,5 +1,11 @@
 # 📡 Serde
 
+[![MIT License](https://img.shields.io/github/license/FortySevenEffects/serde.svg?color=blue)](https://github.com/FortySevenEffects/serde/blob/master/LICENSE)
+![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/FortySevenEffects/serde.svg?color=blue&label=release)
+[![Travis CI Build](https://img.shields.io/travis/com/FortySevenEffects/serde.svg)](https://travis-ci.com/FortySevenEffects/serde)
+[![Average issue resolution time](https://isitmaintained.com/badge/resolution/FortySevenEffects/serde.svg)](https://isitmaintained.com/project/FortySevenEffects/serde)
+[![Number of open issues](https://isitmaintained.com/badge/open/FortySevenEffects/serde.svg)](https://isitmaintained.com/project/FortySevenEffects/serde)
+
 Exchange structured data between Arduino boards.
 
 ## Features
