@@ -112,6 +112,8 @@ includes=sensor-data.h  # The name of the file where you placed your definitions
 version=0.0.1
 author=
 maintainer=
+sentence=
+paragraph=
 category=Uncategorized
 architectures=*
 ```
