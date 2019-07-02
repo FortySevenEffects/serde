@@ -6,7 +6,7 @@ struct Output
     unsigned long mTime;
 };
 
-using SerdeTX = Serde<Output, HardwareSerial>;
+using SerdeTX = Serde<Output>;
 
 Output output;
 

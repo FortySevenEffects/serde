@@ -3,6 +3,13 @@
 #include <inttypes.h>
 #include <string.h>
 
+#ifdef ARDUINO
+#include <Arduino.h>
+#define SERDE_DEFAULT_STREAM = Stream
+#else
+#define SERDE_DEFAULT_STREAM
+#endif
+
 static const uint8_t sSerdeHeaderMsb  = 0xf0;
 static const uint8_t sSerdeHeaderLsb  = 0x0d;
 
@@ -66,7 +73,10 @@ public:
  * }
  * ```
  */
-template <typename T, typename Stream>
+template <
+  typename T,     /// The type you want to send (struct or scalar)
+  typename Stream SERDE_DEFAULT_STREAM
+>
 struct Serde
 {
 public:

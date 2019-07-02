@@ -6,7 +6,7 @@ struct Command
     float mPwmLevel;  // Between 0.f and 1.f
 };
 
-using SerdeRX = Serde<Command, HardwareSerial>;
+using SerdeRX = Serde<Command>;
 
 static const int sLedPin = 13; // on Arduino Leonardo
 static const int sPwmPin = 3;

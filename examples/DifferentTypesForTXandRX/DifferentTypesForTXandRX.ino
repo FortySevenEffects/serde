@@ -29,8 +29,8 @@ struct Command
 
 using Result = float; // You can use free-form scalar types too.
 
-using SerdeRX = Serde<Command, HardwareSerial>; // Receive Command objects
-using SerdeTX = Serde<Result,  HardwareSerial>; // Send a single float back
+using SerdeRX = Serde<Command>; // Receive Command objects
+using SerdeTX = Serde<Result>;  // Send a single float back
 
 // --
 
