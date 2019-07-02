@@ -23,10 +23,11 @@ Use the Arduino Library Manager to install the library.
 
 ## Usage
 
-1. Define shared data (using a weather station as an example):
+1. Define [shared data](#sharing-data) (using a weather station as an example):
 
 ```cpp
-// shared/sensor-data.h
+// libraries/weather-shared/src/sensor-data.h
+#pragma once
 
 struct SensorData
 {
@@ -42,7 +43,7 @@ struct SensorData
 
 ```cpp
 #include <serde.h>
-#include "shared/sensor-data.h"
+#include <sensor-data.h>
 
 using SerdeTX = Serde<SensorData>;
 
@@ -63,7 +64,7 @@ void loop()
 
 ```cpp
 #include <serde.h>
-#include "shared/sensor-data.h"
+#include <sensor-data.h>
 
 using SerdeRX = Serde<SensorData>;
 
@@ -82,6 +83,46 @@ void loop()
         logTime(data.mTime);
     }
 }
+```
+
+## Sharing data
+
+This library requires both emitter and receiver to use the same data types.
+
+Copying the definitions back and forth is cumbersome and will lead to errors,
+so sharing the type definitions between sketches is essential.
+
+The best way to share files between sketches is to create a library.
+
+1. Go to the Arduino libraries directory
+
+- ~/Documents/Arduino/libraries on macOS and Linux
+- ~\Documents\Arduino\libraries on Windows
+
+2. Create a new directory, name it as you wish, for example: `weather-shared`
+3. Create a subdirectory `src` in `weather-shared`
+4. Place your definitions in a header file in `src`, like `weather-shared/src/sensor-data.h`
+5. Create a `library.properties` file under `weather-shared`:
+
+```ini
+name=WeatherShared      # This name is only used for published libraries
+includes=sensor-data.h  # The name of the file where you placed your definitions
+
+# The rest is required by Arduino:
+version=0.0.1
+author=
+maintainer=
+category=Uncategorized
+architectures=*
+```
+
+You can now include your definitions as such:
+
+```cpp
+#include <serde.h>
+#include <sensor-data.h>
+
+using SerdeTX = Serde<SensorData>;
 ```
 
 ## Caveats
