@@ -212,12 +212,7 @@ inline bool Serde<T, Stream>::unpack(Stream &inStream, Packet &outPacket)
   outPacket.mHeaderLsb = inStream.read();
 
   // Read data
-  const size_t readBytes = inStream.readBytes(outPacket.mData, sizeof(T));
-  if (readBytes != sizeof(T))
-  {
-    // Mismatching read size
-    return false;
-  }
+  inStream.readBytes(outPacket.mData, sizeof(T));
 
   // Read checksum and verify
   outPacket.mChecksum = inStream.read();
