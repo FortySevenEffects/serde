@@ -13,7 +13,9 @@ static const int sPwmPin = 3;
 
 void setup()
 {
-    Serial1.begin(115200);
+    // SERIAL_PORT_HARDWARE aliases to the default
+    // hardware serial port on your board.
+    SERIAL_PORT_HARDWARE.begin(115200);
     pinMode(sLedPin, OUTPUT);
     pinMode(sPwmPin, OUTPUT);
 }
@@ -21,7 +23,7 @@ void setup()
 void loop()
 {
     Command command;
-    if (SerdeRX::receive(Serial1, command))
+    if (SerdeRX::receive(SERIAL_PORT_HARDWARE, command))
     {
         digitalWrite(sLedPin, command.mLedStatus ? HIGH : LOW);
         analogWrite(sPwmPin, int(command.mPwmLevel * 255));
