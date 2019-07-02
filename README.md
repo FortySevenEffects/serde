@@ -17,14 +17,17 @@ Use the Arduino Library Manager to install the library.
 
 ## Usage
 
-1. Define shared data:
+1. Define shared data (using a weather station as an example):
 
 ```cpp
-// shared/message.h
+// shared/sensor-data.h
 
-struct Message
+struct SensorData
 {
-    int mCounter;
+    float mTemperature;
+    float mHumidity;
+    float mLatitude;
+    float mLongitude;
     unsigned long mTime;
 };
 ```
@@ -33,23 +36,20 @@ struct Message
 
 ```cpp
 #include <serde.h>
-#include "shared/message.h"
+#include "shared/sensor-data.h"
 
-using SerdeTX = Serde<Message, HardwareSerial>;
-
-Message sMessage = { 0, 0 };
+using SerdeTX = Serde<SensorData>;
 
 void setup()
 {
-    Serial.begin(115200);
+    Serial1.begin(115200);
 }
 
 void loop()
 {
-    sMessage.mCounter += 1;
-    sMessage.mTime = millis() - sMessage.mTime;
-    SerdeTX::send(sMessage, Serial);
-    delay(10);
+    SensorData data = getSensorData();
+    data.mTime = millis();
+    SerdeTX::send(data, Serial1);
 }
 ```
 
@@ -57,23 +57,23 @@ void loop()
 
 ```cpp
 #include <serde.h>
-#include "shared/message.h"
+#include "shared/sensor-data.h"
 
-using SerdeRX = Serde<Message, HardwareSerial>;
+using SerdeRX = Serde<SensorData>;
 
 void setup()
 {
-    Serial.begin(115200);
+    Serial1.begin(115200);
 }
 
 void loop()
 {
-    Message message;
-    if (SerdeRX::receive(Serial1, message))
+    SensorData data;
+    if (SerdeRX::receive(Serial1, data))
     {
-        // do something with the message data:
-        message.mCounter;
-        message.mTime;
+        recordWeather(data.mTemperature, data.mHumidity);
+        recordPosition(data.mLatitude, data.mLongitude);
+        logTime(data.mTime);
     }
 }
 ```
@@ -106,14 +106,14 @@ Message message;
 memset(message.mText, 0, sizeof(Message::mText)); // clear
 memcpy(message.mText, "Hello, World !", 14);      // copy
 
-Serde<Message, HardwareSerial>::send(message, Serial);
+Serde<Message>::send(message, Serial);
 ```
 
 There is nothing particular to do after reception, just use it:
 
 ```cpp
 Message message;
-if (Serde<Message, HardwareSerial>::receive(Serial1, message))
+if (Serde<Message>::receive(Serial1, message))
 {
     Serial.println(message.mText);
 }

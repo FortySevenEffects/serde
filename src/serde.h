@@ -49,27 +49,60 @@ public:
  * ## Usage
  *
  * ```
- * struct Foo {
- *   char mName[16];
- *   byte mAge;
+ * // Emitter board
+ * #include <serde.h>
+ *
+ * struct SensorData
+ * {
+ *     float mTemperature;
+ *     float mHumidity;
+ *     float mLatitude;
+ *     float mLongitude;
+ *     unsigned long mTime;
  * };
  *
- * using FooSerde = Serde<Foo, HardwareSerial>;
+ * using SerdeTX = Serde<SensorData>;
  *
- * Foo fooTx;
- * // Strings are tricky: set the buffer first to all zeros,
- * // then memcpy your desired variable-length string into the buffer.
- * memset(fooTx.mName, 0, 16);
- * memcpy(fooTx.mName, "John Doe", 8);
- * fooTx.mAge = 42;
- *
- * FooSerde::send(fooTx, Serial);
- *
- * Foo fooRx;
- * if (FooSerde::receive(Serial, fooRx))
+ * void setup()
  * {
- *   fooRx.mName;
- *   fooRx.mAge;
+ *     Serial1.begin(115200);
+ * }
+ *
+ * void loop()
+ * {
+ *     SensorData data = getSensorData();
+ *     data.mTime = millis();
+ *     SerdeTX::send(data, Serial1);
+ * }
+ *
+ * // Receiver board
+ * #include <serde.h>
+ *
+ * struct SensorData
+ * {
+ *     float mTemperature;
+ *     float mHumidity;
+ *     float mLatitude;
+ *     float mLongitude;
+ *     unsigned long mTime;
+ * };
+ *
+ * using SerdeRX = Serde<SensorData>;
+ *
+ * void setup()
+ * {
+ *     Serial1.begin(115200);
+ * }
+ *
+ * void loop()
+ * {
+ *     SensorData data;
+ *     if (SerdeRX::receive(Serial1, data))
+ *     {
+ *         handleSensor(data.mTemperature, data.mHumidity);
+ *         handlePosition(data.mLatitude, data.mLongitude);
+ *         logTime(data.mTime);
+ *     }
  * }
  * ```
  */
