@@ -28,4 +28,3 @@ receive	KEYWORD2
 
 sSerdeHeaderMsb	LITERAL1
 sSerdeHeaderLsb	LITERAL1
-sSize	LITERAL1
