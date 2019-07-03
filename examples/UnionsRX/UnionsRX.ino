@@ -64,5 +64,5 @@ void setup()
 
 void loop()
 {
-    SerialRX::read(SERIAL_PORT_HARDWARE, handleCommand);
+    SerdeRX::read(SERIAL_PORT_HARDWARE, handleCommand);
 }
