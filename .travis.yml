@@ -23,6 +23,7 @@ env:
     - BUILD_UNIT_TESTS=1
     - PLATFORMIO_CI_SRC=examples/DifferentTypesForTXandRX
     - PLATFORMIO_CI_SRC=examples/Receiving
+    - PLATFORMIO_CI_SRC=examples/ReceivingWithCallback
     - PLATFORMIO_CI_SRC=examples/Sending
     - PLATFORMIO_CI_SRC=examples/NestedData
 
