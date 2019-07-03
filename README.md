@@ -85,12 +85,12 @@ void loop()
     // Pass it the serial port to read from and a callback:
     SerdeRX::read(Serial1, recordSensorData);
 
-    // Note: you can also check manually for incoming data:
-    SensorData data;
-    if (SerdeRX::receive(Serial1, data))
-    {
-        recordSensorData(data);
-    }
+    // Or you can also check manually for incoming data:
+    // SensorData data;
+    // if (SerdeRX::receive(Serial1, data))
+    // {
+    //     recordSensorData(data);
+    // }
 }
 ```
 
