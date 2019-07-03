@@ -15,6 +15,7 @@ Exchange structured data between Arduino boards.
 - 🔒 Internal checksum for data integrity verification
 - ↔️ Receive and send different types on the same stream
   ([example](./examples/DifferentTypesForTXandRX/DifferentTypesForTXandRX.ino))
+- 🔱 Advanced messaging with unions (examples: [send](./examples/UnionsTX/UnionsTX.ino), [receive](./examples/UnionsRX/UnionsRX.ino))
 
 ## Install
 
