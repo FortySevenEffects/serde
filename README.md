@@ -67,6 +67,14 @@ void loop()
 
 using SerdeRX = Serde<SensorData>;
 
+// This is called when new data is available
+void recordSensorData(const SensorData& data)
+{
+    recordWeather(data.mTemperature, data.mHumidity);
+    recordPosition(data.mLatitude, data.mLongitude);
+    logTime(data.mTime);
+}
+
 void setup()
 {
     Serial1.begin(115200);
@@ -74,12 +82,14 @@ void setup()
 
 void loop()
 {
+    // Pass it the serial port to read from and a callback:
+    SerdeRX::read(Serial1, recordSensorData);
+
+    // Note: you can also check manually for incoming data:
     SensorData data;
     if (SerdeRX::receive(Serial1, data))
     {
-        recordWeather(data.mTemperature, data.mHumidity);
-        recordPosition(data.mLatitude, data.mLongitude);
-        logTime(data.mTime);
+        recordSensorData(data);
     }
 }
 ```

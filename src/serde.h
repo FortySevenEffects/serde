@@ -114,11 +114,13 @@ struct Serde
 {
 public:
   using Packet = SerdePacket<sizeof(T)>;
+  using Callback = void (*)(const T&);
 
 public: // TX
   static inline void send(const T &inObject, Stream &inStream);
 
 public: // RX
+  static inline void read(Stream& inStream, Callback inCallback);
   static inline bool receive(Stream &inStream, T &outObject);
 
 private:
@@ -162,6 +164,16 @@ inline void Serde<T, Stream>::send(const T &inObject, Stream &inStream)
 }
 
 // --
+
+template <typename T, typename Stream>
+inline void Serde<T, Stream>::read(Stream &inStream, Callback inCallback)
+{
+  T object;
+  if (receive(inStream, object))
+  {
+    inCallback(object);
+  }
+}
 
 template <typename T, typename Stream>
 inline bool Serde<T, Stream>::receive(Stream &inStream, T &outObject)

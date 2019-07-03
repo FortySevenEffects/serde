@@ -106,4 +106,46 @@ TEST(SerdeRx, shouldReturnTrueWhenChecksumMatches)
     EXPECT_EQ(stream.mRxBuffer.getLength(), 0);
 }
 
+template<typename T, T Value>
+struct CallbackContainer
+{
+    static void callback(const T& data)
+    {
+        EXPECT_EQ(data, Value);
+        sWasCalled = true;
+        sWasCalledWith = data;
+    }
+
+    static bool sWasCalled;
+    static T sWasCalledWith;
+};
+
+template<typename T, T Value>
+bool CallbackContainer<T, Value>::sWasCalled = false;
+
+template<typename T, T Value>
+T CallbackContainer<T, Value>::sWasCalledWith = T(0);
+
+TEST(SerdeRx, shouldCallTheCallback)
+{
+    using Stream = SerialMock<16>;
+    using SerdeRX = Serde<uint8, Stream>;
+    using Cbk = CallbackContainer<uint8, 42>;
+    Cbk::sWasCalled = false;
+    Cbk::sWasCalledWith = 0;
+
+    SerdeRX::Packet packet;
+    packet.mData[0] = 42;
+    const uint8 checksum = packet.generateChecksum();
+    const uint8 input[4] = {
+        sSerdeHeaderMsb, sSerdeHeaderLsb, 42, checksum
+    };
+    Stream stream;
+    stream.mRxBuffer.write(input, 4);
+    SerdeRX::read(stream, Cbk::callback);
+    EXPECT_TRUE(Cbk::sWasCalled);
+    EXPECT_EQ(Cbk::sWasCalledWith, 42);
+    EXPECT_EQ(stream.mRxBuffer.getLength(), 0);
+}
+
 END_UNNAMED_NAMESPACE
