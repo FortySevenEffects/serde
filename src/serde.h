@@ -17,14 +17,14 @@ template <size_t Size>
 struct SerdePacket
 {
 public:
-  uint8_t mHeaderMsb  = sSerdeHeaderMsb;
-  uint8_t mHeaderLsb  = sSerdeHeaderLsb;
-  uint8_t mData[Size] = { 0x00 };
-  uint8_t mChecksum   = 0x00;
+    uint8_t mHeaderMsb  = sSerdeHeaderMsb;
+    uint8_t mHeaderLsb  = sSerdeHeaderLsb;
+    uint8_t mData[Size] = { 0x00 };
+    uint8_t mChecksum   = 0x00;
 
 public:
-  inline uint8_t generateChecksum() const;
-  inline bool verifyChecksum() const;
+    inline uint8_t generateChecksum() const;
+    inline bool verifyChecksum() const;
 };
 
 // --
@@ -107,25 +107,25 @@ public:
  * ```
  */
 template <
-  typename T,     /// The type you want to send (struct or scalar)
-  typename Stream SERDE_DEFAULT_STREAM
+    typename T,     /// The type you want to send (struct or scalar)
+    typename Stream SERDE_DEFAULT_STREAM
 >
 struct Serde
 {
 public:
-  using Packet = SerdePacket<sizeof(T)>;
-  using Callback = void (*)(const T&);
+    using Packet = SerdePacket<sizeof(T)>;
+    using Callback = void (*)(const T&);
 
 public: // TX
-  static inline void send(const T &inObject, Stream &inStream);
+    static inline void send(const T &inObject, Stream &inStream);
 
 public: // RX
-  static inline void read(Stream& inStream, Callback inCallback);
-  static inline bool receive(Stream &inStream, T &outObject);
+    static inline void read(Stream& inStream, Callback inCallback);
+    static inline bool receive(Stream &inStream, T &outObject);
 
 private:
-  static inline void pack(const T &inObject, Packet &outPacket);
-  static inline bool unpack(Stream &inStream, Packet &outPacket);
+    static inline void pack(const T &inObject, Packet &outPacket);
+    static inline bool unpack(Stream &inStream, Packet &outPacket);
 };
 
 // -----------------------------------------------------------------------------
@@ -133,21 +133,21 @@ private:
 template <size_t Size>
 inline uint8_t SerdePacket<Size>::generateChecksum() const
 {
-  uint8_t x = 0x2a; // Initialization vector
-  x ^= mHeaderMsb;
-  x ^= mHeaderLsb;
-  for (size_t i = 0; i < Size; ++i)
-  {
-    x ^= mData[i];
-  }
-  return x;
+    uint8_t x = 0x2a; // Initialization vector
+    x ^= mHeaderMsb;
+    x ^= mHeaderLsb;
+    for (size_t i = 0; i < Size; ++i)
+    {
+        x ^= mData[i];
+    }
+    return x;
 }
 
 template <size_t Size>
 inline bool SerdePacket<Size>::verifyChecksum() const
 {
-  const uint8_t computedChecksum = generateChecksum();
-  return mChecksum == computedChecksum;
+    const uint8_t computedChecksum = generateChecksum();
+    return mChecksum == computedChecksum;
 }
 
 // -----------------------------------------------------------------------------
@@ -155,12 +155,12 @@ inline bool SerdePacket<Size>::verifyChecksum() const
 template <typename T, typename Stream>
 inline void Serde<T, Stream>::send(const T &inObject, Stream &inStream)
 {
-  Packet packet;
-  pack(inObject, packet);
-  inStream.write(packet.mHeaderMsb);
-  inStream.write(packet.mHeaderLsb);
-  inStream.write(packet.mData, sizeof(T));
-  inStream.write(packet.mChecksum);
+    Packet packet;
+    pack(inObject, packet);
+    inStream.write(packet.mHeaderMsb);
+    inStream.write(packet.mHeaderLsb);
+    inStream.write(packet.mData, sizeof(T));
+    inStream.write(packet.mChecksum);
 }
 
 // --
@@ -168,24 +168,24 @@ inline void Serde<T, Stream>::send(const T &inObject, Stream &inStream)
 template <typename T, typename Stream>
 inline void Serde<T, Stream>::read(Stream &inStream, Callback inCallback)
 {
-  T object;
-  if (receive(inStream, object))
-  {
-    inCallback(object);
-  }
+    T object;
+    if (receive(inStream, object))
+    {
+        inCallback(object);
+    }
 }
 
 template <typename T, typename Stream>
 inline bool Serde<T, Stream>::receive(Stream &inStream, T &outObject)
 {
-  Packet packet;
-  if (!unpack(inStream, packet))
-  {
-    return false;
-  }
-  T *const addr = &outObject;
-  memcpy(addr, packet.mData, sizeof(T));
-  return true;
+    Packet packet;
+    if (!unpack(inStream, packet))
+    {
+        return false;
+    }
+    T *const addr = &outObject;
+    memcpy(addr, packet.mData, sizeof(T));
+    return true;
 }
 
 // --
@@ -193,40 +193,42 @@ inline bool Serde<T, Stream>::receive(Stream &inStream, T &outObject)
 template <typename T, typename Stream>
 inline void Serde<T, Stream>::pack(const T &inObject, Packet &outPacket)
 {
-  const T *const addr = &inObject;
-  outPacket.mHeaderMsb = sSerdeHeaderMsb;
-  outPacket.mHeaderLsb = sSerdeHeaderLsb;
-  memcpy(outPacket.mData, addr, sizeof(T));
-  outPacket.mChecksum = outPacket.generateChecksum();
+    const T *const addr = &inObject;
+    outPacket.mHeaderMsb = sSerdeHeaderMsb;
+    outPacket.mHeaderLsb = sSerdeHeaderLsb;
+    memcpy(outPacket.mData, addr, sizeof(T));
+    outPacket.mChecksum = outPacket.generateChecksum();
 }
 
 template <typename T, typename Stream>
 inline bool Serde<T, Stream>::unpack(Stream &inStream, Packet &outPacket)
 {
-  while (inStream.available() && inStream.peek() != sSerdeHeaderMsb) {
-    inStream.read(); // Drop non-header bytes
-  }
-  if (size_t(inStream.available()) < sizeof(Packet)) {
-    return false; // Not enough data
-  }
+    while (inStream.available() && inStream.peek() != sSerdeHeaderMsb)
+    {
+        inStream.read(); // Drop non-header bytes
+    }
+    if (size_t(inStream.available()) < sizeof(Packet))
+    {
+        return false; // Not enough data
+    }
 
-  // At this point, the first byte in the buffer is sSerdeHeaderMsb
-  // and there is enough data to try to recompose a message.
+    // At this point, the first byte in the buffer is sSerdeHeaderMsb
+    // and there is enough data to try to recompose a message.
 
-  // Verify header
-  outPacket.mHeaderMsb = inStream.read();
-  if (inStream.peek() != sSerdeHeaderLsb)
-  {
-    // Don't drop it as it could be a header MSB.
-    // Abort now and try next time.
-    return false;
-  }
-  outPacket.mHeaderLsb = inStream.read();
+    // Verify header
+    outPacket.mHeaderMsb = inStream.read();
+    if (inStream.peek() != sSerdeHeaderLsb)
+    {
+        // Don't drop it as it could be a header MSB.
+        // Abort now and try next time.
+        return false;
+    }
+    outPacket.mHeaderLsb = inStream.read();
 
-  // Read data
-  inStream.readBytes(outPacket.mData, sizeof(T));
+    // Read data
+    inStream.readBytes(outPacket.mData, sizeof(T));
 
-  // Read checksum and verify
-  outPacket.mChecksum = inStream.read();
-  return outPacket.verifyChecksum();
+    // Read checksum and verify
+    outPacket.mChecksum = inStream.read();
+    return outPacket.verifyChecksum();
 }
