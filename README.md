@@ -283,9 +283,9 @@ void setup()
 
 void loop()
 {
-    // Just pass it where to read from:
+    // Create commands and send them:
     SayHello hello;
-    memset(hello.name, 0, 32);
+    memset(hello.name, 0, sizeof(SayHello::name));
     memcpy(hello.name, "Commander", 9);
     CommanderTX::send(hello, Serial1);
 
