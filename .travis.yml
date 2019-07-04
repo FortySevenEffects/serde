@@ -27,6 +27,7 @@ env:
     - PLATFORMIO_CI_SRC=examples/Sending
     - PLATFORMIO_CI_SRC=examples/NestedData
     - PLATFORMIO_CI_SRC=examples/Commander
+    - PLATFORMIO_CI_SRC=examples/CommanderCalculator
 
 addons:
   apt:
