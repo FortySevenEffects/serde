@@ -328,14 +328,16 @@ example), as long as both devices use the right types:
 
 ```
    Device A      Device B
+-----------      -----------
 CommanderTX  ->  CommanderRX
     SerdeRX  <-  SerdeTX
 ```
 
-But this won't work:
+But these connections won't work:
 
 ```
 CommanderTX  ->  SerdeRX
+             or
     SerdeTX  ->  CommanderRX
 ```
 
