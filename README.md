@@ -189,7 +189,8 @@ if (Serde<Message>::receive(Serial1, message))
 
 ## Commander
 
-Commander is a layer above Serde to handle multiple types of messages
+Commander is a [Remote Procedure Call](https://en.wikipedia.org/wiki/Remote_procedure_call)
+layer built on top of Serde to handle multiple types of messages
 (commands) being sent and received, with different attributes:
 
 ```cpp
