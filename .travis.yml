@@ -26,8 +26,7 @@ env:
     - PLATFORMIO_CI_SRC=examples/ReceivingWithCallback
     - PLATFORMIO_CI_SRC=examples/Sending
     - PLATFORMIO_CI_SRC=examples/NestedData
-    - PLATFORMIO_CI_SRC=examples/UnionsTX
-    - PLATFORMIO_CI_SRC=examples/UnionsRX
+    - PLATFORMIO_CI_SRC=examples/Commander
 
 addons:
   apt:

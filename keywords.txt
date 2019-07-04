@@ -9,7 +9,10 @@
 Serde	KEYWORD1
 SerdePacket	KEYWORD1
 Packet	KEYWORD1
+
+# Includes
 serde.h	KEYWORD1
+serde-commander.h	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -17,6 +20,7 @@ serde.h	KEYWORD1
 
 send	KEYWORD2
 receive	KEYWORD2
+read	KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
@@ -28,3 +32,11 @@ receive	KEYWORD2
 
 sSerdeHeaderMsb	LITERAL1
 sSerdeHeaderLsb	LITERAL1
+
+# Macros
+SERDE_COMMANDER_CREATE_TX	LITERAL1
+SERDE_COMMANDER_CREATE_RX	LITERAL1
+SERDE_COMMANDER_CREATE	LITERAL1
+SERDE_COMMANDER_CREATE_CUSTOM_TX	LITERAL1
+SERDE_COMMANDER_CREATE_CUSTOM_RX	LITERAL1
+SERDE_COMMANDER_CREATE_CUSTOM	LITERAL1

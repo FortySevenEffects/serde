@@ -15,7 +15,7 @@ Exchange structured data between Arduino boards.
 - 🔒 Internal checksum for data integrity verification
 - ↔️ Receive and send different types on the same stream
   ([example](./examples/DifferentTypesForTXandRX/DifferentTypesForTXandRX.ino))
-- 🔱 Advanced messaging with unions (examples: [send](./examples/UnionsTX/UnionsTX.ino), [receive](./examples/UnionsRX/UnionsRX.ino))
+- ⚡ Advanced command processing with [Commander](#commander)
 
 ## Install
 
@@ -31,11 +31,11 @@ Use the Arduino Library Manager to install the library.
 
 struct SensorData
 {
-    float mTemperature;
-    float mHumidity;
-    float mLatitude;
-    float mLongitude;
-    unsigned long mTime;
+    float temperature;
+    float humidity;
+    float latitude;
+    float longitude;
+    unsigned long time;
 };
 ```
 
@@ -55,7 +55,7 @@ void setup()
 void loop()
 {
     SensorData data = getSensorData();
-    data.mTime = millis();
+    data.time = millis();
     SerdeTX::send(data, Serial1);
 }
 ```
@@ -71,9 +71,9 @@ using SerdeRX = Serde<SensorData>;
 // This is called when new data is available
 void recordSensorData(const SensorData& data)
 {
-    recordWeather(data.mTemperature, data.mHumidity);
-    recordPosition(data.mLatitude, data.mLongitude);
-    logTime(data.mTime);
+    recordWeather(data.temperature, data.humidity);
+    recordPosition(data.latitude, data.longitude);
+    logTime(data.time);
 }
 
 void setup()
@@ -158,12 +158,12 @@ To send a string:
 struct Message
 {
     // Can hold at maximum 31 characters + 1 null terminator
-    char mText[32] = { 0 };
+    char text[32] = { 0 };
 };
 
 Message message;
-memset(message.mText, 0, sizeof(Message::mText)); // clear
-memcpy(message.mText, "Hello, World !", 14);      // copy
+memset(message.text, 0, sizeof(Message::text));  // clear
+memcpy(message.text, "Hello, World !", 14);      // copy
 
 Serde<Message>::send(message, Serial);
 ```
@@ -174,7 +174,7 @@ There is nothing particular to do after reception, just use it:
 Message message;
 if (Serde<Message>::receive(Serial1, message))
 {
-    Serial.println(message.mText);
+    Serial.println(message.text);
 }
 ```
 
@@ -187,8 +187,140 @@ if (Serde<Message>::receive(Serial1, message))
   so if using the received value in an interrupt handler, be sure to know
   that it could be in the middle of an update.
 
+## Commander
+
+Commander is a layer above Serde to handle multiple types of messages
+(commands) being sent and received, with different attributes:
+
+```cpp
+#include <serde-commander.h>
+
+// 1. Define a structure for each of
+// the commands you want to receive:
+struct SayHello
+{
+    char name[32];
+};
+
+struct SetPinState
+{
+    byte pinNumber;
+    bool state;
+};
+
+// 2. Create a Commander object and
+// list the commands it will work with:
+SERDE_COMMANDER_CREATE_RX(CommanderRX,
+    SayHello,
+    SetPinState
+);
+
+// 3. Create a function for each command
+// with the following signature (required):
+// void on{CommandName}Received(const CommandName&)
+// It will be called automatically when the
+// corresponding command is received.
+void onSayHelloReceived(const SayHello& data)
+{
+    Serial.print("Hello, ");
+    Serial.println(data.name);
+}
+
+void onSetPinStateReceived(const SetPinState& data)
+{
+    digitalWrite(data.pinNumber, data.state ? HIGH : LOW);
+}
+
+// --
+
+void setup()
+{
+    Serial.begin(115200);
+    Serial1.begin(115200);
+}
+
+void loop()
+{
+    // Just pass it where to read from:
+    CommanderRX::read(Serial1);
+}
+```
+
+To send commands:
+
+```cpp
+#include <serde-commander.h>
+
+// Those structs would be defined in a shared file
+struct SayHello
+{
+    char name[32];
+};
+
+struct SetPinState
+{
+    byte pinNumber;
+    bool state;
+};
+
+// 2. Create a Commander object and
+// list the commands it will work with:
+SERDE_COMMANDER_CREATE_TX(CommanderTX,
+    SayHello,
+    SetPinState
+);
+
+// No need to define callbacks for Commander TX
+// They are only required if you want to receive
+// commands (RX-only or bidirectional).
+
+// --
+
+void setup()
+{
+    Serial1.begin(115200);
+}
+
+void loop()
+{
+    // Just pass it where to read from:
+    SayHello hello;
+    memset(hello.name, 0, 32);
+    memcpy(hello.name, "Commander", 9);
+    CommanderTX::send(hello, Serial1);
+
+    SetPinState pinState;
+    pinState.pinNumber = 13;
+    pinState.state = true;
+    CommanderTX::send(pinState, Serial1);
+    delay(100);
+    pinState.state = false;
+    CommanderTX::send(pinState, Serial1);
+    delay(100);
+}
+```
+
+There are 3 Commander creation macros:
+
+- `SERDE_COMMANDER_CREATE_TX`: Send-only (no need to implement the callbacks
+  for this one).
+- `SERDE_COMMANDER_CREATE_RX`: Receive-only (callbacks required)
+- `SERDE_COMMANDER_CREATE`: Both send and receive the same commands
+  (callbacks required)
+
+Checkout the [Commander example](./examples/Commander/Commander.ino)
+for more details.
+
+### Compatibility with standard Serde
+
+Please note that a Commander message will not be compatible with a plain
+Serde message (and vice-versa).
+
+Only connect SerdeTX with SerdeRX and CommanderTX with CommanderRX.
+
 ## License & Aknowledgements
 
-Inspired from Rust's awesome crate [serde](https://crates.io/crates/serde). 🦀
+Inspired from Rust's awesome crate
+[serde](https://crates.io/crates/serde). 🦀
 
 [MIT](https://github.com/47ng/typescript-library-starter/blob/master/LICENSE) - Made with ❤️ by [François Best](https://francoisbest.com).
