@@ -210,7 +210,7 @@ struct SetPinState
 };
 
 // 2. Create a CommanderRX interface and
-// list the commands it will work with:
+// list the commands it will handle:
 SERDE_COMMANDER_CREATE_RX(CommanderRX,
     SayHello,
     SetPinState
@@ -265,7 +265,7 @@ struct SetPinState
 };
 
 // 2. Create a CommanderTX interface and
-// list the commands it will work with:
+// list the commands it may send:
 SERDE_COMMANDER_CREATE_TX(CommanderTX,
     SayHello,
     SetPinState
