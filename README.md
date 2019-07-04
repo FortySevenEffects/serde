@@ -208,7 +208,7 @@ struct SetPinState
     bool state;
 };
 
-// 2. Create a Commander object and
+// 2. Create a CommanderRX interface and
 // list the commands it will work with:
 SERDE_COMMANDER_CREATE_RX(CommanderRX,
     SayHello,
@@ -263,7 +263,7 @@ struct SetPinState
     bool state;
 };
 
-// 2. Create a Commander object and
+// 2. Create a CommanderTX interface and
 // list the commands it will work with:
 SERDE_COMMANDER_CREATE_TX(CommanderTX,
     SayHello,
