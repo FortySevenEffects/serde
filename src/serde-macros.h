@@ -37,4 +37,4 @@
  */
 #define CALL_MACRO_X_FOR_EACH(x, ...) \
     _GET_NTH_ARG("ignored", ##__VA_ARGS__, \
-_fe8, _fe7, _fe6, _fe5, _fe_4, _fe_3, _fe_2, _fe_1, _fe_0)(x, ##__VA_ARGS__)
+_fe_8, _fe_7, _fe_6, _fe_5, _fe_4, _fe_3, _fe_2, _fe_1, _fe_0)(x, ##__VA_ARGS__)
