@@ -1,5 +1,3 @@
-#include <SoftwareSerial.h>
-#include <Wire.h>
 #include <serde-commander.h>
 
 // RX Commands
