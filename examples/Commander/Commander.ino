@@ -28,7 +28,7 @@ SERDE_COMMANDER_CREATE_TX(CommanderTX, Feedback);
 // --
 
 // Callbacks must have the following signature:
-// void handleTypeNameReceived(const TypeName&)
+// void onTypeNameReceived(const TypeName&)
 void onMoveReceived(const Move& move)
 {
     analogWrite(5, move.x);
