@@ -313,13 +313,30 @@ for more details.
 
 ### Commander caveats and limitations
 
-Commander currently supports up to 8 commands.
-If you need more, please open a PR on [`src/serde-macros.h`](./src/serde-macros.h).
+Commander currently supports up to 8 commands. If you need more, please
+open a PR on
+[`src/serde-macros.h`](./src/serde-macros.h).
 
-Also please note that a Commander message will not be compatible with a plain
-Serde message (and vice-versa).
+Also please note that a Commander message will not be compatible with a
+plain Serde message (and vice-versa).
 
-Only connect SerdeTX with SerdeRX, and CommanderTX with CommanderRX.
+You can have one side of the communication handled by Commander, and the
+"reply" handled by Serde (as done in the
+[CommanderCalculator](./examples/CommanderCalculator/CommanderCalculator.ino)
+example), as long as both devices use the right types:
+
+```
+   Device A      Device B
+CommanderTX  ->  CommanderRX
+    SerdeRX  <-  SerdeTX
+```
+
+But this won't work:
+
+```
+CommanderTX  ->  SerdeRX
+    SerdeTX  ->  CommanderRX
+```
 
 ## License & Aknowledgements
 
