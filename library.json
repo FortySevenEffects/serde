@@ -16,7 +16,7 @@
     "branch": "master"
   },
   "export": {
-    "include": ["src/serde.h"],
+    "include": ["src", "examples"],
     "exclude": ["tests/**"]
   },
   "frameworks": "arduino",
