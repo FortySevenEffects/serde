@@ -2,8 +2,8 @@
 
 struct Output
 {
-    unsigned long mCounter;
-    unsigned long mTime;
+    unsigned long counter;
+    unsigned long time;
 };
 
 using SerdeTX = Serde<Output>;
@@ -19,7 +19,7 @@ void setup()
 
 void loop()
 {
-    output.mCounter += 1;
-    output.mTime = millis();
+    output.counter += 1;
+    output.time = millis();
     SerdeTX::send(output, SERIAL_PORT_HARDWARE);
 }

@@ -4,7 +4,7 @@
 
 struct Feedback
 {
-    float mBatteryLevel;
+    float batteryLevel;
 };
 
 SERDE_COMMANDER_CREATE_TX(CommanderTX, Feedback);
@@ -40,7 +40,7 @@ void onRotateReceived(const Rotate& rotate)
 void onRequestFeedbackReceived(const RequestFeedback& /* unused */)
 {
     Feedback feedback;
-    feedback.mBatteryLevel = 1.f;
+    feedback.batteryLevel = 1.f;
     CommanderTX::send(feedback, SERIAL_PORT_HARDWARE);
 }
 

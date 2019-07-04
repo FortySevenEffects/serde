@@ -2,8 +2,8 @@
 
 struct Command
 {
-    bool mLedStatus;
-    float mPwmLevel;  // Between 0.f and 1.f
+    bool ledStatus;
+    float pwmLevel;  // Between 0.f and 1.f
 };
 
 using SerdeRX = Serde<Command>;
@@ -25,7 +25,7 @@ void loop()
     Command command;
     if (SerdeRX::receive(SERIAL_PORT_HARDWARE, command))
     {
-        digitalWrite(sLedPin, command.mLedStatus ? HIGH : LOW);
-        analogWrite(sPwmPin, int(command.mPwmLevel * 255));
+        digitalWrite(sLedPin, command.ledStatus ? HIGH : LOW);
+        analogWrite(sPwmPin, int(command.pwmLevel * 255));
     }
 }

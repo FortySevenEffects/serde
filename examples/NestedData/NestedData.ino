@@ -8,14 +8,14 @@
 
 struct LatLng
 {
-    float mLatitude;
-    float mLongitude;
+    float latitude;
+    float longitude;
 };
 
 struct Data
 {
-    LatLng mFrom;
-    LatLng mTo;
+    LatLng from;
+    LatLng to;
 };
 
 using SerdeTX = Serde<Data>;
@@ -30,9 +30,9 @@ void setup()
 void loop()
 {
     Data infernal;
-    infernal.mFrom.mLatitude  = 48.8567f;
-    infernal.mFrom.mLongitude = 2.3508f;
-    infernal.mTo.mLatitude    = 52.516667f;
-    infernal.mTo.mLongitude   = 13.388889f;
+    infernal.from.latitude  = 48.8567f;
+    infernal.from.longitude = 2.3508f;
+    infernal.to.latitude    = 52.516667f;
+    infernal.to.longitude   = 13.388889f;
     SerdeTX::send(infernal, SERIAL_PORT_HARDWARE);
 }

@@ -22,9 +22,9 @@ enum class Operations
 
 struct Command
 {
-    Operations mOperation;
-    float mOperandA;
-    float mOperandB;
+    Operations operation;
+    float operandA;
+    float operandB;
 };
 
 using SerdeRX = Serde<Command>; // Receive Command objects
@@ -44,29 +44,29 @@ void loop()
     Command command;
     if (SerdeRX::receive(SERIAL_PORT_HARDWARE, command))
     {
-        switch (command.mOperation)
+        switch (command.operation)
         {
         case Operations::Add:
             SerdeTX::send(
-              command.mOperandA + command.mOperandB,
+              command.operandA + command.operandB,
               SERIAL_PORT_HARDWARE
             );
             break;
         case Operations::Subtract:
             SerdeTX::send(
-              command.mOperandA - command.mOperandB,
+              command.operandA - command.operandB,
               SERIAL_PORT_HARDWARE
             );
             break;
         case Operations::Multiply:
             SerdeTX::send(
-              command.mOperandA * command.mOperandB,
+              command.operandA * command.operandB,
               SERIAL_PORT_HARDWARE
             );
             break;
         case Operations::Divide:
             SerdeTX::send(
-              command.mOperandA / command.mOperandB,
+              command.operandA / command.operandB,
               SERIAL_PORT_HARDWARE
             );
             break;
