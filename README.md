@@ -311,12 +311,15 @@ There are 3 Commander creation macros:
 Checkout the [Commander example](./examples/Commander/Commander.ino)
 for more details.
 
-### Compatibility with standard Serde
+### Commander caveats and limitations
 
-Please note that a Commander message will not be compatible with a plain
+Commander currently supports up to 8 commands.
+If you need more, please open a PR on [`src/serde-macros.h`](./src/serde-macros.h).
+
+Also please note that a Commander message will not be compatible with a plain
 Serde message (and vice-versa).
 
-Only connect SerdeTX with SerdeRX and CommanderTX with CommanderRX.
+Only connect SerdeTX with SerdeRX, and CommanderTX with CommanderRX.
 
 ## License & Aknowledgements
 
