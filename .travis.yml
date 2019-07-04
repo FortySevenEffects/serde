@@ -26,7 +26,7 @@ env:
     - PLATFORMIO_CI_SRC=examples/ReceivingWithCallback
     - PLATFORMIO_CI_SRC=examples/Sending
     - PLATFORMIO_CI_SRC=examples/NestedData
-    - PLATFORMIO_CI_SRC=examples/Commander
+    - PLATFORMIO_CI_SRC=examples/CommanderRobot
     - PLATFORMIO_CI_SRC=examples/CommanderCalculator
     - PLATFORMIO_CI_SRC=examples/CommanderRemoteIO
 

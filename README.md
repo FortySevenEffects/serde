@@ -309,8 +309,11 @@ There are 3 Commander creation macros:
 - `SERDE_COMMANDER_CREATE`: Both send and receive the same commands
   (callbacks required)
 
-Checkout the [Commander example](./examples/Commander/Commander.ino)
-for more details.
+Checkout the Commander examples for more details:
+
+- [Robot](./examples/CommanderRobot/CommanderRobot.ino)
+- [Calculator](./examples/CommanderCalculator/CommanderCalculator.ino)
+- [Remote IO](./examples/CommanderRemoteIO/CommanderRemoteIO.ino)
 
 ### Commander caveats and limitations
 

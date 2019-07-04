@@ -37,7 +37,7 @@ void onRotateReceived(const Rotate& rotate)
     analogWrite(10, rotate.angle);
 }
 
-void onRequestFeedbackReceived(const RequestFeedback& _)
+void onRequestFeedbackReceived(const RequestFeedback& /* unused */)
 {
     Feedback feedback;
     feedback.mBatteryLevel = 1.f;
