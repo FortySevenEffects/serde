@@ -1,6 +1,15 @@
 #include <serde-commander.h>
 
-// RX Commands
+// TX commands
+
+struct Feedback
+{
+    float mBatteryLevel;
+};
+
+SERDE_COMMANDER_CREATE_TX(CommanderTX, Feedback);
+
+// RX Commands --
 
 struct Move
 {
@@ -14,18 +23,6 @@ struct Rotate
 };
 
 struct RequestFeedback {}; // Command has no arguments
-
-// TX commands
-
-struct Feedback
-{
-    float mBatteryLevel;
-};
-
-SERDE_COMMANDER_CREATE_RX(CommanderRX, Move, Rotate, RequestFeedback);
-SERDE_COMMANDER_CREATE_TX(CommanderTX, Feedback);
-
-// --
 
 // Callbacks must have the following signature:
 // void onTypeNameReceived(const TypeName&)
@@ -46,6 +43,8 @@ void onRequestFeedbackReceived(const RequestFeedback& _)
     feedback.mBatteryLevel = 1.f;
     CommanderTX::send(feedback, SERIAL_PORT_HARDWARE);
 }
+
+SERDE_COMMANDER_CREATE_RX(CommanderRX, Move, Rotate, RequestFeedback);
 
 // --
 
